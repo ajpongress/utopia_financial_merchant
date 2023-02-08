@@ -55,7 +55,7 @@ public class SpringBatchIntegrationTests_SingleMerchantTransaction {
     private JobRepositoryTestUtils jobRepositoryTestUtils;
 
     // Set merchantID to test for single merchant operations & export
-    private String merchantID = "3527213246127876953";
+    private long merchantID = 3527213246127876953L;
     private String INPUT = "src/test/resources/input/test_input.csv";
     private String EXPECTED_OUTPUT = "src/test/resources/output/expected_output_SingleMerchantTransaction.xml";
     private String ACTUAL_OUTPUT = "src/test/resources/output/merchant_" + merchantID;
@@ -68,7 +68,7 @@ public class SpringBatchIntegrationTests_SingleMerchantTransaction {
     private JobParameters testJobParameters_SingleMerchantTransaction() {
 
         return new JobParametersBuilder()
-                .addString("merchantID_param", merchantID)
+                .addLong("merchantID_param", merchantID)
                 .addString("file.input", INPUT)
                 .addString("outputPath_param", ACTUAL_OUTPUT)
                 .toJobParameters();
