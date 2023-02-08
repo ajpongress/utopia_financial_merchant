@@ -34,8 +34,8 @@ public class AllMerchantsProcessor implements ItemProcessor<MerchantTransactionM
         synchronized (this) {
 
             // Strip negative sign from MerchantID
-            long temp_MerchantID = Math.abs(merchantTransactionModel.getMerchantID());
-            merchantTransactionModel.setMerchantID(temp_MerchantID);
+//            long temp_MerchantID = Math.abs(merchantTransactionModel.getMerchantID());
+//            merchantTransactionModel.setMerchantID(temp_MerchantID);
 
             // Strip fractional part of MerchantTransactionModelZip if greater than 5 characters
             if (merchantTransactionModel.getTransactionZip().length() > 5) {

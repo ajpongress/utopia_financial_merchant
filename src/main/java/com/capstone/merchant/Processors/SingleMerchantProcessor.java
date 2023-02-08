@@ -35,8 +35,8 @@ public class SingleMerchantProcessor implements ItemProcessor<MerchantTransactio
             if (transaction.getMerchantID() == (merchantID_from_URI)) {
 
                 // Strip negative sign from MerchantID
-                long temp_MerchantID = Math.abs(transaction.getMerchantID());
-                transaction.setMerchantID(temp_MerchantID);
+//                long temp_MerchantID = Math.abs(transaction.getMerchantID());
+//                transaction.setMerchantID(temp_MerchantID);
 
                 // Strip fractional part of TransactionZip if greater than 5 characters
                 if (transaction.getTransactionZip().length() > 5) {
