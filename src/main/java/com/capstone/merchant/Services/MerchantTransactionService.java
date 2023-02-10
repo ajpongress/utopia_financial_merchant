@@ -44,6 +44,7 @@ public class MerchantTransactionService {
         }
 
         return new JobParametersBuilder()
+                .addLong("time.Started", System.currentTimeMillis())
                 .addString("file.input", pathInput)
                 .addString("outputPath_param", pathOutput)
                 .toJobParameters();
@@ -58,6 +59,7 @@ public class MerchantTransactionService {
         }
 
         return new JobParametersBuilder()
+                .addLong("time.Started", System.currentTimeMillis())
                 .addLong("merchantID_param", merchantID)
                 .addString("file.input", pathInput)
                 .addString("outputPath_param", pathOutput)
