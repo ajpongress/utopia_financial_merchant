@@ -18,12 +18,12 @@ public class AllMerchantsProcessor implements ItemProcessor<MerchantTransactionM
 
     private final HashMap<Long, String> merchantTransactionModelMap = new HashMap<>();
 
-    // Useful for additional jobs or steps
-    public void clearMap() {
-        merchantTransactionModelMap.clear();
-    }
-
     private static long transactionIdCounter = 0;
+
+    public void clearAllTrackersAndCounters() {
+        merchantTransactionModelMap.clear();
+        transactionIdCounter = 0;
+    }
 
     // ----------------------------------------------------------------------------------
     // --                                METHODS                                       --

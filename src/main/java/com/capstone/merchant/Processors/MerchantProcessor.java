@@ -23,7 +23,10 @@ public class MerchantProcessor implements ItemProcessor<MerchantModel, MerchantM
     private final Faker faker = new Faker();
     private static long idCounter = 0;
 
-
+    public void clearAllTrackersAndCounters() {
+        merchantIdTracker.clear();
+        idCounter = 0;
+    }
 
     // ----------------------------------------------------------------------------------
     // --                                METHODS                                       --

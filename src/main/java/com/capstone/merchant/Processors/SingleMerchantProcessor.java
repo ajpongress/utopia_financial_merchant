@@ -22,6 +22,10 @@ public class SingleMerchantProcessor implements ItemProcessor<MerchantTransactio
 
     private static long transactionIdCounter = 0;
 
+    public void clearAllTrackersAndCounters() {
+        transactionIdCounter = 0;
+    }
+
     // ----------------------------------------------------------------------------------
     // --                                METHODS                                       --
     // ----------------------------------------------------------------------------------

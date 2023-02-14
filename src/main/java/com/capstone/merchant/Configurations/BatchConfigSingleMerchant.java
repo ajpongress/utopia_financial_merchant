@@ -71,6 +71,9 @@ public class BatchConfigSingleMerchant {
                         log.info("------------------------------------------------------------------");
                         log.info(stepExecution.getSummary());
                         log.info("------------------------------------------------------------------");
+
+                        singleMerchantProcessor.clearAllTrackersAndCounters();
+
                         return StepExecutionListener.super.afterStep(stepExecution);
                     }
                 })
