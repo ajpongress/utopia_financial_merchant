@@ -14,6 +14,12 @@ public class MerchantController {
     // --                                  SETUP                                       --
     // ----------------------------------------------------------------------------------
 
+    private static String reportsPath;
+
+    public static String getReportsPath() {
+        return reportsPath;
+    }
+
     @Autowired
     MerchantService merchantService;
 
@@ -25,8 +31,9 @@ public class MerchantController {
 
     // generate state data
     @GetMapping("/generatemerchants")
-    public ResponseEntity<String> generateStatesAPI(@RequestParam String source, @RequestParam String destination) {
+    public ResponseEntity<String> generateStatesAPI(@RequestParam String source, @RequestParam String destination, @RequestParam String reports_destination) {
 
+        reportsPath = reports_destination;
         return merchantService.generateMerchants(source, destination);
     }
 }

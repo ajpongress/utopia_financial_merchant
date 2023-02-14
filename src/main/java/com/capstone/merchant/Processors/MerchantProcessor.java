@@ -59,4 +59,5 @@ public class MerchantProcessor implements ItemProcessor<MerchantModel, MerchantM
             return merchantModel;
         }
     }
+
 }
