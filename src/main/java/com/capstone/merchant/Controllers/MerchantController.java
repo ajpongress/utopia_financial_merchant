@@ -31,9 +31,16 @@ public class MerchantController {
 
     // generate state data
     @GetMapping("/generatemerchants")
-    public ResponseEntity<String> generateStatesAPI(@RequestParam String source, @RequestParam String destination, @RequestParam String reports_destination) {
+    public ResponseEntity<String> generateStatesAPI(@RequestParam String source, @RequestParam String destination) {
+
+        return merchantService.generateMerchants(source, destination);
+    }
+
+    // get unique count
+    @GetMapping("/getuniquecount")
+    public ResponseEntity<String> getUniqueCountAPI(@RequestParam String source, @RequestParam String reports_destination) {
 
         reportsPath = reports_destination;
-        return merchantService.generateMerchants(source, destination);
+        return merchantService.getUniqueCount(source);
     }
 }

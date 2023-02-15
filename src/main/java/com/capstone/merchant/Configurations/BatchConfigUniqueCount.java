@@ -3,6 +3,7 @@ package com.capstone.merchant.Configurations;
 import com.capstone.merchant.Controllers.MerchantController;
 import com.capstone.merchant.Models.MerchantModel;
 import com.capstone.merchant.Processors.MerchantProcessor;
+import com.capstone.merchant.Processors.UniqueCountProcessor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.*;
 import org.springframework.batch.core.job.builder.JobBuilder;
@@ -24,7 +25,7 @@ import java.io.IOException;
 
 @Configuration
 @Slf4j
-public class BatchConfigMerchant {
+public class BatchConfigUniqueCount {
 
     // ----------------------------------------------------------------------------------
     // --                                  SETUP                                       --
@@ -41,7 +42,7 @@ public class BatchConfigMerchant {
     private SynchronizedItemStreamReader<MerchantModel> synchronizedItemStreamReader;
 
     @Autowired
-    private MerchantProcessor merchantProcessor;
+    private UniqueCountProcessor uniqueCountProcessor;
 
     @Autowired
     @Qualifier("writer_Merchant")
@@ -56,40 +57,43 @@ public class BatchConfigMerchant {
     // --                             STEPS & JOBS                                     --
     // ----------------------------------------------------------------------------------
 
-    // Step - merchant generation
+    // Step - unique count
     @Bean
-    public Step step_generateMerchants() {
+    public Step step_getUniqueCount() {
 
-        return new StepBuilder("generateMerchantsStep", jobRepository)
+        return new StepBuilder("getUniqueCountStep", jobRepository)
                 .<MerchantModel, MerchantModel> chunk(50000, transactionManager)
                 .reader(synchronizedItemStreamReader)
-                .processor(merchantProcessor)
+                .processor(uniqueCountProcessor)
                 .writer(xmlWriter)
                 .listener(new StepExecutionListener() {
                     @Override
                     public ExitStatus afterStep(StepExecution stepExecution) {
 
-//                        // Create reports file using reports file path from Controller API call
-//                        String filePath = MerchantController.getReportsPath();
-//                        File uniqueMerchantsReport = new File(filePath);
-//
-//                        // Write relevant data to reports file
-//                        try {
-//                            BufferedWriter writer = new BufferedWriter(new FileWriter(uniqueMerchantsReport));
-//                            writer.write("Total unique merchants = " + stepExecution.getWriteCount());
-//                            writer.close();
-//
-//                        } catch (IOException e) {
-//                            throw new RuntimeException(e);
-//                        }
-//
-//                        log.info("------------------------------------------------------------------");
-//                        log.info("Total unique merchants = " + stepExecution.getWriteCount());
+                        // Get total unique merchants using idCounter from processor
+                        long totalUniqueMerchants = uniqueCountProcessor.getIdCounter();
+
+                        // Create reports file using reports file path from Controller API call
+                        String filePath = MerchantController.getReportsPath();
+                        File uniqueMerchantsReport = new File(filePath);
+
+                        // Write relevant data to reports file
+                        try {
+                            BufferedWriter writer = new BufferedWriter(new FileWriter(uniqueMerchantsReport));
+                            writer.write("Total unique merchants = " + totalUniqueMerchants);
+                            writer.close();
+
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                        log.info("------------------------------------------------------------------");
+                        log.info("Total unique merchants = " + totalUniqueMerchants);
                         log.info("------------------------------------------------------------------");
                         log.info(stepExecution.getSummary());
                         log.info("------------------------------------------------------------------");
 
-                        merchantProcessor.clearAllTrackersAndCounters();
+                        uniqueCountProcessor.clearAllTrackersAndCounters();
 
                         return StepExecutionListener.super.afterStep(stepExecution);
                     }
@@ -98,12 +102,12 @@ public class BatchConfigMerchant {
                 .build();
     }
 
-    // Job - merchant generation
+    // Job - get unique count
     @Bean
-    public Job job_generateMerchants() {
+    public Job job_getUniqueCount() {
 
-        return new JobBuilder("generateMerchantsJob", jobRepository)
-                .start(step_generateMerchants())
+        return new JobBuilder("getUniqueCountJob", jobRepository)
+                .start(step_getUniqueCount())
                 .build();
     }
 }
