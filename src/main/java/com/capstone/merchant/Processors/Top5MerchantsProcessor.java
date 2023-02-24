@@ -22,38 +22,40 @@ public class Top5MerchantsProcessor implements ItemProcessor<MerchantModel, Merc
     // Value = counter counting how many times dollar amount was seen
     HashMap<MerchantModel, Long> merchantMap = new HashMap<>();
 
-    public Map<Long, List<Map.Entry<MerchantModel, Long>>> getMerchantMap() {
+    public Map<MerchantModel, Long> getMerchantMap() {
 
-        HashMap<MerchantModel, Long> tempMap = new HashMap<>();
-        long tempMerchantID = 0L;
+            // Sort map by value (counter)
+            Map<Long, List<Map.Entry<MerchantModel, Long>>> sortedMap = merchantMap.entrySet().stream()
+                    .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                    .collect(Collectors.groupingBy(Map.Entry::getValue));
 
-        // Sort hashmap by top 5 recurring dollar amounts
-        merchantMap = merchantMap
-                .entrySet().stream()
-                .sorted((o1, o2) -> o2.getValue().compareTo(o1.getValue()))
-                //.limit(5)
-                .map(Map.Entry::getKey)
-                .collect(HashMap::new, (map, key) -> map.put(key, merchantMap.get(key)), Map::putAll);
+            // Only keep one MerchantModel per MerchantId
+            for (Map.Entry<Long, List<Map.Entry<MerchantModel, Long>>> entry : sortedMap.entrySet()) {
+                List<Map.Entry<MerchantModel, Long>> list = entry.getValue();
+                for (int i = 1; i < list.size(); i++) {
+                    list.remove(i);
+                }
+            }
 
-//        for (MerchantModel m : merchantMap.keySet()) {
-//
-//            if (m.getMerchantID() == tempMerchantID) {
-//                // do nothing
-//            }
-//            else {
-//                tempMap.put(m, merchantMap.get(m));
-//            }
-//
-//            tempMerchantID = m.getMerchantID();
-//
-//        }
+            // Only keep top 5
+            int counter = 0;
+            for (Map.Entry<Long, List<Map.Entry<MerchantModel, Long>>> entry : sortedMap.entrySet()) {
+                if (counter < 5) {
+                    counter++;
+                } else {
+                    sortedMap.remove(entry.getKey());
+                }
+            }
 
-
-
-        return merchantMap.entrySet().stream()
-                .collect(Collectors.groupingBy(
-                        x -> x.getKey().getMerchantID()
-                ));
+            // Convert back to HashMap
+            HashMap<MerchantModel, Long> tempMap = new HashMap<>();
+            for (Map.Entry<Long, List<Map.Entry<MerchantModel, Long>>> entry : sortedMap.entrySet()) {
+                List<Map.Entry<MerchantModel, Long>> list = entry.getValue();
+                for (Map.Entry<MerchantModel, Long> entry2 : list) {
+                    tempMap.put(entry2.getKey(), entry2.getValue());
+                }
+            }
+            return tempMap;
     }
 
     private long tempCounter = 0L;

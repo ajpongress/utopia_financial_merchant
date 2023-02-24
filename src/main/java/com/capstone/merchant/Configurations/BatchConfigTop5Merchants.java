@@ -85,7 +85,7 @@ public class BatchConfigTop5Merchants {
                         String filePath = MerchantTransactionController.getReportsPath();
                         File top5RecurringReport = new File(filePath);
 
-                        Map<Long, List<Map.Entry<MerchantModel, Long>>> sortedHashMap = top5MerchantsProcessor.getMerchantMap();
+                        Map<MerchantModel, Long> recurringMerchantMap = top5MerchantsProcessor.getMerchantMap();
 
                         // Write relevant data to reports file
                         try {
@@ -99,18 +99,14 @@ public class BatchConfigTop5Merchants {
                             writer.write("Merchant ID" + "\t" + "Dollar Amount" + "\t" + "Recurring Count");
                             writer.newLine();
                             writer.newLine();
-
-                            for (Long m : sortedHashMap.keySet()) {
-
-                                writer.write(
-                                        m +
-                                            "\t" +
-                                            sortedHashMap.get(m).get(0).getKey().getTransactionAmount() +
-                                            "\t" +
-                                            sortedHashMap.get(m).get(0).getValue()
-                                        );
-                                writer.newLine();
-                            }
+                            recurringMerchantMap.forEach((merchant, recurringCount) -> {
+                                try {
+                                    writer.write(merchant.getMerchantID() + "\t" + merchant.getTransactionAmount() + "\t" + recurringCount);
+                                    writer.newLine();
+                                } catch (IOException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            });
 
                             writer.close();
 
