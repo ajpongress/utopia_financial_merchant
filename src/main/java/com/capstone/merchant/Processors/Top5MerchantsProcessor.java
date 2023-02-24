@@ -23,39 +23,12 @@ public class Top5MerchantsProcessor implements ItemProcessor<MerchantModel, Merc
     HashMap<MerchantModel, Long> merchantMap = new HashMap<>();
 
     public Map<MerchantModel, Long> getMerchantMap() {
-
-            // Sort map by value (counter)
-            Map<Long, List<Map.Entry<MerchantModel, Long>>> sortedMap = merchantMap.entrySet().stream()
+            // Sort map by value (counter), descending, and put into new map, only return instance of merchant id with the highest dollar amount, only return 5
+            HashMap<MerchantModel, Long> sortedMap = merchantMap.entrySet().stream()
                     .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-                    .collect(Collectors.groupingBy(Map.Entry::getValue));
-
-            // Only keep one MerchantModel per MerchantId
-            for (Map.Entry<Long, List<Map.Entry<MerchantModel, Long>>> entry : sortedMap.entrySet()) {
-                List<Map.Entry<MerchantModel, Long>> list = entry.getValue();
-                for (int i = 1; i < list.size(); i++) {
-                    list.remove(i);
-                }
-            }
-
-            // Only keep top 5
-            int counter = 0;
-            for (Map.Entry<Long, List<Map.Entry<MerchantModel, Long>>> entry : sortedMap.entrySet()) {
-                if (counter < 5) {
-                    counter++;
-                } else {
-                    sortedMap.remove(entry.getKey());
-                }
-            }
-
-            // Convert back to HashMap
-            HashMap<MerchantModel, Long> tempMap = new HashMap<>();
-            for (Map.Entry<Long, List<Map.Entry<MerchantModel, Long>>> entry : sortedMap.entrySet()) {
-                List<Map.Entry<MerchantModel, Long>> list = entry.getValue();
-                for (Map.Entry<MerchantModel, Long> entry2 : list) {
-                    tempMap.put(entry2.getKey(), entry2.getValue());
-                }
-            }
-            return tempMap;
+                    .limit(5)
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+        return sortedMap;
     }
 
     private long tempCounter = 0L;
