@@ -7,7 +7,10 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.groupingBy;
 
 @Component
 @Slf4j
@@ -23,11 +26,12 @@ public class Top5MerchantsProcessor implements ItemProcessor<MerchantModel, Merc
     HashMap<MerchantModel, Long> merchantMap = new HashMap<>();
 
     public Map<MerchantModel, Long> getMerchantMap() {
-            // Sort map by value (counter), descending, and put into new map, only return instance of merchant id with the highest dollar amount, only return 5
-            HashMap<MerchantModel, Long> sortedMap = merchantMap.entrySet().stream()
-                    .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+            // Sort map by value (counter), descending, only return the 5 merchant ids with the highest counter
+            Map<MerchantModel, Long> sortedMap = merchantMap.entrySet().stream()
+                    .sorted(Entry.comparingByValue(Comparator.reverseOrder()))
                     .limit(5)
-                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+                    .collect(Collectors.toMap(Entry::getKey, Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+
         return sortedMap;
     }
 
