@@ -15,9 +15,14 @@ public class MerchantTransactionController {
     // --                                  SETUP                                       --
     // ----------------------------------------------------------------------------------
 
+    private static String reportsPath;
+
+    public static String getReportsPath() {
+        return reportsPath;
+    }
+
     @Autowired
     MerchantTransactionService merchantTransactionService;
-
 
 
     // ----------------------------------------------------------------------------------
@@ -36,5 +41,13 @@ public class MerchantTransactionController {
     public ResponseEntity<String> oneMerchantAPI(@PathVariable long merchantID, @RequestParam String source, @RequestParam String destination) {
 
         return merchantTransactionService.exportSingleMerchant(merchantID, source, destination);
+    }
+
+    // Export top 5 recurring merchant transactions
+    @GetMapping("/merchants/top5recurring")
+    public ResponseEntity<String> top5MerchantsAPI(@RequestParam String source, @RequestParam String reports_destination) {
+
+        reportsPath = reports_destination;
+        return merchantTransactionService.exportTop5Merchants(source);
     }
 }

@@ -2,6 +2,7 @@ package com.capstone.merchant.Services;
 
 import com.capstone.merchant.Configurations.BatchConfigAllMerchants;
 import com.capstone.merchant.Configurations.BatchConfigSingleMerchant;
+import com.capstone.merchant.Configurations.BatchConfigTop5Merchants;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.JobParametersInvalidException;
@@ -35,6 +36,9 @@ public class MerchantTransactionService {
     @Autowired
     BatchConfigSingleMerchant batchConfigSingleMerchant;
 
+    @Autowired
+    BatchConfigTop5Merchants batchConfigTop5Merchants;
+
     private JobParameters buildJobParameters_AllMerchants(String pathInput, String pathOutput) {
 
         // Check if source file.input is valid
@@ -49,6 +53,8 @@ public class MerchantTransactionService {
                 .addString("outputPath_param", pathOutput)
                 .toJobParameters();
     }
+
+    // ----------------------------------------------------------------------------------
 
     private JobParameters buildJobParameters_SingleMerchant(long merchantID, String pathInput, String pathOutput) {
 
@@ -66,11 +72,30 @@ public class MerchantTransactionService {
                 .toJobParameters();
     }
 
+    // ----------------------------------------------------------------------------------
+
+    private JobParameters buildJobParameters_Top5Merchants(String pathInput) {
+
+        // Check if source file.input is valid
+        File file = new File(pathInput);
+        if (!file.exists()) {
+            throw new ItemStreamException("Requested source doesn't exist");
+        }
+
+        return new JobParametersBuilder()
+                .addLong("time.Started", System.currentTimeMillis())
+                .addString("file.input", pathInput)
+                .toJobParameters();
+    }
+
 
 
     // ----------------------------------------------------------------------------------
     // --                                METHODS                                       --
     // ----------------------------------------------------------------------------------
+
+    // choose operation based on (int) option sent from controller
+
 
     // all merchants
     public ResponseEntity<String> exportAllMerchants(String pathInput, String pathOutput) {
@@ -114,6 +139,31 @@ public class MerchantTransactionService {
             return new ResponseEntity<>("Bean creation had an error. Job halted.", HttpStatus.BAD_REQUEST);
         } catch (NumberFormatException e) {
             return new ResponseEntity<>("Merchant ID format invalid", HttpStatus.BAD_REQUEST);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>("Requested source doesn't exist", HttpStatus.BAD_REQUEST);
+        } catch (JobExecutionAlreadyRunningException e) {
+            return new ResponseEntity<>("Job execution already running", HttpStatus.BAD_REQUEST);
+        } catch (JobRestartException e) {
+            return new ResponseEntity<>("Job restart exception", HttpStatus.BAD_REQUEST);
+        } catch (JobInstanceAlreadyCompleteException e) {
+            return new ResponseEntity<>("Job already completed", HttpStatus.BAD_REQUEST);
+        } catch (JobParametersInvalidException e) {
+            return new ResponseEntity<>("Job parameters are invalid", HttpStatus.BAD_REQUEST);
+        }
+
+        // Job successfully ran
+        return new ResponseEntity<>("Job parameters OK. Job Completed", HttpStatus.CREATED);
+    }
+
+    // top 5 merchants
+    public ResponseEntity<String> exportTop5Merchants(String pathInput) {
+
+        try {
+            JobParameters jobParameters = buildJobParameters_Top5Merchants(pathInput);
+            jobLauncher.run(batchConfigTop5Merchants.job_exportTop5Merchants(), jobParameters);
+
+        } catch (BeanCreationException e) {
+            return new ResponseEntity<>("Bean creation had an error. Job halted.", HttpStatus.BAD_REQUEST);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<>("Requested source doesn't exist", HttpStatus.BAD_REQUEST);
         } catch (JobExecutionAlreadyRunningException e) {

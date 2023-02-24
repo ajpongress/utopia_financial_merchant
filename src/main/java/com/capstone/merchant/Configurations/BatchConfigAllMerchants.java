@@ -3,7 +3,6 @@ package com.capstone.merchant.Configurations;
 import com.capstone.merchant.Classifiers.MerchantTransactionClassifier;
 import com.capstone.merchant.Models.MerchantTransactionModel;
 import com.capstone.merchant.Processors.AllMerchantsProcessor;
-import com.capstone.merchant.TaskExecutors.TaskExecutor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.*;
 import org.springframework.batch.core.job.builder.JobBuilder;

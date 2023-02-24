@@ -35,6 +35,7 @@ public class MerchantReaderCSV {
             MerchantModel merchantModel = new MerchantModel();
 
             merchantModel.setMerchantID(Math.abs(Long.parseLong(fields[8])));
+            merchantModel.setTransactionAmount(fields[6]);
 
             return merchantModel;
         });
