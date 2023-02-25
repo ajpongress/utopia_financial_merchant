@@ -1,6 +1,6 @@
 package com.capstone.merchant.Configurations;
 
-import com.capstone.merchant.Controllers.MerchantTransactionController;
+import com.capstone.merchant.Controllers.MerchantController;
 import com.capstone.merchant.Listeners.CustomChunkListener;
 import com.capstone.merchant.Models.MerchantModel;
 import com.capstone.merchant.Processors.Top5MerchantsProcessor;
@@ -78,7 +78,7 @@ public class BatchConfigTop5Merchants {
                         //merchantTransactionClassifier.closeAllwriters();
 
                         // Create reports file using reports file path from Controller API call
-                        String filePath = MerchantTransactionController.getReportsPath();
+                        String filePath = MerchantController.getReportsPath();
                         File top5RecurringReport = new File(filePath);
 
                         Map<MerchantModel, Long> recurringMerchantMap = top5MerchantsProcessor.getMerchantMap();

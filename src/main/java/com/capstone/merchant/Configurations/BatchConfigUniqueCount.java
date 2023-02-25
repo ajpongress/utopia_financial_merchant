@@ -1,6 +1,7 @@
 package com.capstone.merchant.Configurations;
 
 import com.capstone.merchant.Controllers.MerchantController;
+import com.capstone.merchant.Listeners.CustomChunkListener;
 import com.capstone.merchant.Models.MerchantModel;
 import com.capstone.merchant.Processors.MerchantProcessor;
 import com.capstone.merchant.Processors.UniqueCountProcessor;
@@ -66,6 +67,7 @@ public class BatchConfigUniqueCount {
                 .reader(synchronizedItemStreamReader)
                 .processor(uniqueCountProcessor)
                 .writer(xmlWriter)
+                .listener(new CustomChunkListener())
                 .listener(new StepExecutionListener() {
                     @Override
                     public ExitStatus afterStep(StepExecution stepExecution) {
