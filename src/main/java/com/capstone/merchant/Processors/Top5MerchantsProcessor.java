@@ -26,6 +26,7 @@ public class Top5MerchantsProcessor implements ItemProcessor<MerchantModel, Merc
     HashMap<MerchantModel, Long> merchantMap = new HashMap<>();
 
     public Map<MerchantModel, Long> getMerchantMap() {
+
             // Sort map by value (counter), descending, only return the 5 merchant ids with the highest counter
             Map<MerchantModel, Long> sortedMap = merchantMap.entrySet().stream()
                     .sorted(Entry.comparingByValue(Comparator.reverseOrder()))

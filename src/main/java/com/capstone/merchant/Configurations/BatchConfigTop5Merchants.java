@@ -1,18 +1,14 @@
 package com.capstone.merchant.Configurations;
 
-import com.capstone.merchant.Classifiers.MerchantTransactionClassifier;
 import com.capstone.merchant.Controllers.MerchantTransactionController;
 import com.capstone.merchant.Listeners.CustomChunkListener;
 import com.capstone.merchant.Models.MerchantModel;
-import com.capstone.merchant.Models.MerchantTop5Model;
-import com.capstone.merchant.Models.MerchantTransactionModel;
 import com.capstone.merchant.Processors.Top5MerchantsProcessor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.*;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
-import org.springframework.batch.item.support.ClassifierCompositeItemWriter;
 import org.springframework.batch.item.support.SynchronizedItemStreamReader;
 import org.springframework.batch.item.support.SynchronizedItemStreamWriter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,7 +92,7 @@ public class BatchConfigTop5Merchants {
                             writer.write("-------------------------------------");
                             writer.newLine();
                             writer.newLine();
-                            writer.write("Merchant ID" + "\t" + "Dollar Amount" + "\t" + "Recurring Count");
+                            writer.write("Merchant ID -" + "\t" + "Dollar Amount -" + "\t" + "Recurring Count");
                             writer.newLine();
                             writer.newLine();
                             recurringMerchantMap.forEach((merchant, recurringCount) -> {
