@@ -3,6 +3,7 @@ package com.capstone.merchant.Configurations;
 import com.capstone.merchant.Controllers.MerchantController;
 import com.capstone.merchant.Listeners.CustomChunkListener;
 import com.capstone.merchant.Models.MerchantModel;
+import com.capstone.merchant.PathHandlers.ReportsPathHandler;
 import com.capstone.merchant.Processors.Top5MerchantsProcessor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.*;
@@ -52,6 +53,9 @@ public class BatchConfigTop5Merchants {
     @Qualifier("taskExecutor_Merchant")
     private org.springframework.core.task.TaskExecutor asyncTaskExecutor;
 
+    @Autowired
+    private ReportsPathHandler reportsPathHandler;
+
 //    @Autowired
 //    private MerchantTransactionClassifier merchantTransactionClassifier;
 
@@ -78,8 +82,9 @@ public class BatchConfigTop5Merchants {
                         //merchantTransactionClassifier.closeAllwriters();
 
                         // Create reports file using reports file path from Controller API call
-                        String filePath = MerchantController.getReportsPath();
-                        File top5RecurringReport = new File(filePath);
+//                        String filePath = MerchantController.getReportsPath();
+//                        File top5RecurringReport = new File(filePath);
+                        File top5RecurringReport = new File(reportsPathHandler.getReportsPath());
 
                         Map<MerchantModel, Long> recurringMerchantMap = top5MerchantsProcessor.getMerchantMap();
 
