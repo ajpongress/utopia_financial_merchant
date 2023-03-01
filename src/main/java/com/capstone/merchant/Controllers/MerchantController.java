@@ -56,7 +56,7 @@ public class MerchantController {
     public ResponseEntity<String> getUniqueCountAPI(@RequestParam String source, @RequestParam String reports_destination) {
 
         reportsPath = reports_destination;
-        return merchantService.getUniqueCount(source);
+        return merchantService.getUniqueCount(source, reports_destination);
     }
 
     // Export top 5 recurring merchant transactions
@@ -64,6 +64,6 @@ public class MerchantController {
     public ResponseEntity<String> top5MerchantsAPI(@RequestParam String source, @RequestParam String reports_destination) {
 
         reportsPath = reports_destination;
-        return merchantService.exportTop5Merchants(source);
+        return merchantService.exportTop5Merchants(source, reports_destination);
     }
 }

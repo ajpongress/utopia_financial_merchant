@@ -79,7 +79,7 @@ public class MerchantService {
 
     // ----------------------------------------------------------------------------------
 
-    private JobParameters buildJobParameters_MerchantsReportOnly(String pathInput) {
+    private JobParameters buildJobParameters_MerchantsReportOnly(String pathInput, String reports_destination) {
 
         // Check if source file.input is valid
         File file = new File(pathInput);
@@ -90,6 +90,7 @@ public class MerchantService {
         return new JobParametersBuilder()
                 .addLong("time.Started", System.currentTimeMillis())
                 .addString("file.input", pathInput)
+                .addString("reportsPath_param", reports_destination)
                 .toJobParameters();
     }
 
@@ -189,10 +190,10 @@ public class MerchantService {
     // ----------------------------------------------------------------------------------
 
     // get unique count
-    public ResponseEntity<String> getUniqueCount(String pathInput) {
+    public ResponseEntity<String> getUniqueCount(String pathInput, String reports_destination) {
 
         try {
-            JobParameters jobParameters = buildJobParameters_MerchantsReportOnly(pathInput);
+            JobParameters jobParameters = buildJobParameters_MerchantsReportOnly(pathInput, reports_destination);
             jobLauncher.run(batchConfigUniqueCount.job_getUniqueCount(), jobParameters);
 
         } catch (BeanCreationException e) {
@@ -216,10 +217,10 @@ public class MerchantService {
     // ----------------------------------------------------------------------------------
 
     // top 5 merchants
-    public ResponseEntity<String> exportTop5Merchants(String pathInput) {
+    public ResponseEntity<String> exportTop5Merchants(String pathInput, String reports_destination) {
 
         try {
-            JobParameters jobParameters = buildJobParameters_MerchantsReportOnly(pathInput);
+            JobParameters jobParameters = buildJobParameters_MerchantsReportOnly(pathInput, reports_destination);
             jobLauncher.run(batchConfigTop5Merchants.job_exportTop5Merchants(), jobParameters);
 
         } catch (BeanCreationException e) {
